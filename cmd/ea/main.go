@@ -47,6 +47,12 @@ func (a *Arrangements) GenerateCallbackFunc() js.Func {
 			panic(err)
 		}
 
+		err = a.GenerateRoomUtilView()
+		if err != nil {
+			// TODO: also show error on html page
+			panic(err)
+		}
+
 		// create download links using b64 encoded file content
 		doc := js.Global().Get("document")
 		dloadDiv := doc.Call("getElementById", "downloads")

@@ -65,7 +65,7 @@ const (
 
 	selectAllLocationsQuery = `SELECT DISTINCT location
     FROM input
-    WHERE location != "TBC"
+    WHERE location != 'TBC'
     ORDER BY location ASC`
 
 	selectPupilsForLocationQuery = `SELECT COUNT(*)
