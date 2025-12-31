@@ -1,0 +1,21 @@
+<html>
+<title>Exam Arrangements</title>
+	<head>
+		<meta charset="utf-8">
+		<script src="wasm_exec.js"></script>
+		<script>
+			const go = new Go();
+			WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+				go.run(result.instance);
+			});
+		</script>
+	</head>
+	<body>
+	<div id="main"> 
+        <input type="file" id="fileinput">
+        <button id="generateButton" disabled="true">Generate</button>
+        <div id="downloads">
+        </div>
+	</div>
+	</body>
+</html>
