@@ -1,0 +1,67 @@
+format_version: 3
+pipelines:
+  exam_arrangements:
+    group: neil
+    label_template: ${COUNT}
+    lock_behavior: unlockWhenFinished
+    display_order: 1
+    environment_variables:
+    materials:
+      git:
+        git: git@github.com:neilo40/ea_wasm.git
+        shallow_clone: true
+        auto_update: true
+        branch: master
+    stages:
+    - build_and_publish_image:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+        jobs:
+          build_image:
+            timeout: 0
+            elastic_profile_id: default
+            tasks:
+            - exec:
+                command: make
+                arguments:
+                - ci
+                run_if: passed
+            - exec:
+                command: /bin/bash
+                arguments:
+                - -c
+                - podman build -t docker.k8s.neiloconnor.com/ea-server:${GO_PIPELINE_LABEL} . -f Dockerfile
+                run_if: passed
+            - exec:
+                command: /bin/bash
+                arguments:
+                - -c
+                - podman push docker.k8s.neiloconnor.com/ea-server:${GO_PIPELINE_LABEL}
+                run_if: passed
+    - deploy_to_cluster:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+        jobs:
+          deploy:
+            timeout: 0
+            elastic_profile_id: default
+            tasks:
+              - exec:
+                  command: /bin/bash
+                  arguments:
+                  - -c
+                  - envsubst < kube/server.yaml > kube/config_expanded.yml
+                  run_if: passed
+              - exec:
+                  command: /bin/bash
+                  arguments:
+                  - -c
+                  - kubectl -n neil apply -f kube/config_expanded.yml
+                  run_if: passed
+

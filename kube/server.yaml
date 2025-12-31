@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ea-server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: ea-server
+  template:
+    metadata:
+      labels:
+        app: ea-server
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: ea-server
+        image: docker.k8s.neiloconnor.com/ea-server:${GO_PIPELINE_LABEL}
+        ports:
+          - name: http-port
+            containerPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ea-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8001
+      targetPort: 8001
+  selector:
+    app: ea-server
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ea-server-tls-ingress
+  annotations:
+    spec.ingressClassName: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  rules:
+    - host: ea.k8s.neiloconnor.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix 
+            backend:
+              service:
+                name: ea-server
+                port:
+                  number: 8001
+  tls:
+    - secretName: ea-server-tls
+      hosts:
+        - ea.k8s.neiloconnor.com
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ea-server-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: ea-server
+  policyTypes:
+  - Ingress
+  ingress:
+  - {}

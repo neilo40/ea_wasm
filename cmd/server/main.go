@@ -14,5 +14,5 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.PathPrefix("/public").Handler(http.FileServer(http.FS(public)))
 
-	http.ListenAndServe(":3000", router)
+	http.ListenAndServe(":8001", router)
 }

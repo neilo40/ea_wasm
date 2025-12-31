@@ -6,13 +6,13 @@ ARG version=1.0
 
 ENV VERSION ${version}
 
-COPY bin/linux-amd64/image_server /app/
+COPY bin/linux-amd64/main /app/
 
 RUN chown 1000 /app/*
-RUN chmod +x /app/image_server
+RUN chmod +x /app/main
 
 EXPOSE 8001
 
 USER 1000:1000
 
-ENTRYPOINT ["/app/image_server"]
+ENTRYPOINT ["/app/main"]
