@@ -4,7 +4,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -40,8 +39,6 @@ func (a *Arrangements) GenerateRegistersView() error {
 		dates = append(dates, date)
 	}
 	rows.Close()
-
-	log.Println(dates)
 
 	f := excelize.NewFile()
 	defer f.Close()
