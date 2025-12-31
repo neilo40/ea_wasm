@@ -1,8 +1,9 @@
+//go:build js && wasm
+
 package main
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/xuri/excelize/v2"
@@ -41,7 +42,6 @@ func (a *Arrangements) GeneratePupilView() error {
 
 	for _, p := range pupils {
 		sheetName := fmt.Sprintf("%s %s", p.Name, p.Surname)
-		log.Printf("Generating sheet for %s\n", sheetName)
 		index, err := f.NewSheet(sheetName)
 		if err != nil {
 			return err
@@ -79,19 +79,20 @@ func (a *Arrangements) GeneratePupilView() error {
 		if err != nil {
 			return err
 		}
-		maxSubjectWidth := 0
-		maxPaperWidth := 0
-		maxLevelWidth := 0
+		maxSubjectWidth := 7
+		maxPaperWidth := 6
+		maxLevelWidth := 6
 		for examRows.Next() {
 			var subject string
 			var paper string
 			var level string
 			var date string
 			var location string
-			var start string
-			var finish string
+			var start int
+			var finish int
 			examRows.Scan(&subject, &paper, &level, &date, &location, &start, &finish)
-			f.SetSheetRow(sheetName, fmt.Sprintf("A%d", rowNum), &[]any{subject, paper, level, date, location, start, finish})
+			f.SetSheetRow(sheetName, fmt.Sprintf("A%d", rowNum), &[]any{subject, paper, level, date, location, minsToTime(start),
+				minsToTime(finish)})
 			rowNum++
 			if len(subject) > maxSubjectWidth {
 				maxSubjectWidth = len(subject)
@@ -105,9 +106,9 @@ func (a *Arrangements) GeneratePupilView() error {
 		}
 		f.SetCellStyle(sheetName, "A5", fmt.Sprintf("G%d", rowNum-1), tableContentStyle)
 		// no autowidth func, need to set manually
-		f.SetColWidth(sheetName, "A", "A", float64(maxSubjectWidth))
-		f.SetColWidth(sheetName, "B", "B", float64(maxPaperWidth))
-		f.SetColWidth(sheetName, "C", "C", float64(maxLevelWidth))
+		f.SetColWidth(sheetName, "A", "A", float64(maxSubjectWidth)+2)
+		f.SetColWidth(sheetName, "B", "B", float64(maxPaperWidth)+2)
+		f.SetColWidth(sheetName, "C", "C", float64(maxLevelWidth)+2)
 		f.SetColWidth(sheetName, "D", "D", 11) // date
 
 		// footer

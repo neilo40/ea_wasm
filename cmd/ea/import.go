@@ -4,6 +4,8 @@ package main
 
 import (
 	"bytes"
+	"fmt"
+	"strconv"
 	"strings"
 	"syscall/js"
 
@@ -81,8 +83,8 @@ func parseSheetRow(row []string, colMap map[string]int) []any {
 	args = append(args, strings.TrimSpace(row[colMap["Level"]]))
 	args = append(args, strings.TrimSpace(row[colMap["Date"]]))
 	args = append(args, strings.TrimSpace(row[colMap["Location"]]))
-	args = append(args, strings.TrimSpace(row[colMap["Start"]]))
-	args = append(args, strings.TrimSpace(row[colMap["Finish"]]))
+	args = append(args, timeToMins(strings.TrimSpace(row[colMap["Start"]])))
+	args = append(args, timeToMins(strings.TrimSpace(row[colMap["Finish"]])))
 	exTime := ""
 	if len(row) > colMap["Ex Time"] {
 		exTime = row[colMap["Ex Time"]]
@@ -95,4 +97,24 @@ func parseSheetRow(row []string, colMap map[string]int) []any {
 	args = append(args, notes)
 
 	return args
+}
+
+func timeToMins(t string) int {
+	// mins since midnight for the given time t
+	parts := strings.Split(t, ":")
+	if len(parts) < 2 {
+		return 0
+	}
+	totalMins := 0
+	hours, _ := strconv.Atoi(parts[0])
+	totalMins += 60 * hours
+	mins, _ := strconv.Atoi(parts[1])
+	totalMins += mins
+	return totalMins
+}
+
+func minsToTime(m int) string {
+	hours := m / 60
+	mins := m % 60
+	return fmt.Sprintf("%02d:%02d", hours, mins)
 }
