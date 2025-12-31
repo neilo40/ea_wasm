@@ -1,2 +1,3 @@
 bin
 vendor
+server/public/main.wasm
