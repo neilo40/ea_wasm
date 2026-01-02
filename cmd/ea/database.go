@@ -52,13 +52,13 @@ const (
 
 	pupilsHaveBothPartsCheckQuery = `SELECT name,surname,subject,date, COUNT(*)
     FROM input
-    WHERE paper IN ("P1","P2")
+    WHERE paper IN ('P1','P2')
     GROUP BY name,surname,subject,date
     `
 
 	timeBetweenPapersCheckQuery = `SELECT name,surname,subject,paper,date,start,finish 
     FROM input
-    WHERE paper IN ("P1","P2")
+    WHERE paper IN ('P1','P2')
     ORDER BY surname ASC, subject ASC, paper ASC, date ASC, start ASC`
 
 	// room view

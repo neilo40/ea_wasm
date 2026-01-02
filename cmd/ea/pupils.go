@@ -67,6 +67,7 @@ func (a *Arrangements) GeneratePupilView() error {
 		f.MergeCell(sheetName, "A2", "G2")
 		f.SetCellStr(sheetName, "A2", "Please meet Mrs O’Connor at the conference room 10 minutes before your prelim is due to start")
 		f.SetCellStyle(sheetName, "A2", "A2", instructionsStyle)
+		f.SetRowHeight(sheetName, 2, 30)
 
 		// table header
 		f.SetCellStyle(sheetName, "A4", "G4", tableHeaderStyle)

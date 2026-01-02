@@ -121,7 +121,7 @@ func (a *Arrangements) GenerateRoomUtilView() error {
 		f.SetSheetRow("rooms", fmt.Sprintf("A%d", rowNum), &row)
 		rowNum++
 	}
-	f.SetCellStyle("rooms", "A4", fmt.Sprintf("I%d", rowNum-1), tableContentStyle)
+	f.SetCellStyle("rooms", "A4", fmt.Sprintf("%s%d", tableWidthCol, rowNum-1), tableContentStyle)
 	f.SetColWidth("rooms", "A", "A", 30)
 
 	// footer

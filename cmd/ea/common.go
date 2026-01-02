@@ -29,10 +29,10 @@ func setupStyles(f *excelize.File) error {
 			Bold: true,
 		},
 		Border: []excelize.Border{
-			{Type: "left", Style: 1},
-			{Type: "right", Style: 1},
-			{Type: "top", Style: 1},
-			{Type: "bottom", Style: 1},
+			{Type: "left", Style: 1, Color: "000000"},
+			{Type: "right", Style: 1, Color: "000000"},
+			{Type: "top", Style: 1, Color: "000000"},
+			{Type: "bottom", Style: 1, Color: "000000"},
 		},
 	})
 	if err != nil {
@@ -41,10 +41,10 @@ func setupStyles(f *excelize.File) error {
 
 	tableContentStyle, err = f.NewStyle(&excelize.Style{
 		Border: []excelize.Border{
-			{Type: "left", Style: 1},
-			{Type: "right", Style: 1},
-			{Type: "top", Style: 1},
-			{Type: "bottom", Style: 1},
+			{Type: "left", Style: 1, Color: "000000"},
+			{Type: "right", Style: 1, Color: "000000"},
+			{Type: "top", Style: 1, Color: "000000"},
+			{Type: "bottom", Style: 1, Color: "000000"},
 		},
 	})
 	if err != nil {

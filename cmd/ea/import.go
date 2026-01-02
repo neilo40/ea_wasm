@@ -22,6 +22,7 @@ func (a *Arrangements) ReadFile() js.Func {
 			a.inputBytes = dst
 			doc := js.Global().Get("document")
 			doc.Call("getElementById", "generateButton").Set("disabled", false)
+			doc.Call("getElementById", "checkButton").Set("disabled", false)
 
 			return nil
 		}))
