@@ -8,6 +8,7 @@ var (
 	tableContentStyle int
 	instructionsStyle int
 	footerStyle       int
+	dateStyle         int
 	err               error
 	pageSize          = 9 // A4
 	pageOrientation   = "landscape"
@@ -63,6 +64,19 @@ func setupStyles(f *excelize.File) error {
 	footerStyle, err = f.NewStyle(&excelize.Style{
 		Font: &excelize.Font{
 			Size: 8,
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	dateStyle, err = f.NewStyle(&excelize.Style{
+		NumFmt: 15,
+		Border: []excelize.Border{
+			{Type: "left", Style: 1, Color: "000000"},
+			{Type: "right", Style: 1, Color: "000000"},
+			{Type: "top", Style: 1, Color: "000000"},
+			{Type: "bottom", Style: 1, Color: "000000"},
 		},
 	})
 	if err != nil {

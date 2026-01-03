@@ -3,18 +3,19 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 )
 
-func (a *Arrangements) AllPupilsHaveBothPapers() error {
+func (a *Arrangements) AllPupilsHaveBothPapers() string {
 	rows, err := a.db.Query(pupilsHaveBothPartsCheckQuery)
 	if err != nil {
-		return err
+		return err.Error()
 	}
+	defer rows.Close()
 
 	errs := make([]string, 0)
+	errs = append(errs, "<h2>Checking all pupils have both parts...</h2>")
 	for rows.Next() {
 		var name string
 		var surname string
@@ -27,11 +28,10 @@ func (a *Arrangements) AllPupilsHaveBothPapers() error {
 		}
 	}
 
-	if len(errs) == 0 {
-		return nil
+	if len(errs) == 1 {
+		errs = append(errs, "OK")
 	}
-
-	return errors.New(strings.Join(errs, "<br />"))
+	return strings.Join(errs, "<br />")
 }
 
 type Sitting struct {
@@ -44,11 +44,12 @@ type Sitting struct {
 	FinishMins int
 }
 
-func (a *Arrangements) CheckP1P2Gap() error {
+func (a *Arrangements) CheckP1P2Gap() string {
 	rows, err := a.db.Query(timeBetweenPapersCheckQuery)
 	if err != nil {
-		return err
+		return err.Error()
 	}
+	defer rows.Close()
 
 	sittings := make([]Sitting, 0)
 	for rows.Next() {
@@ -64,17 +65,86 @@ func (a *Arrangements) CheckP1P2Gap() error {
 	}
 
 	errs := make([]string, 0)
-	for i := 0; i < len(sittings); i += 2 {
+	errs = append(errs, "<h2>Checking gap between P1 and P2...</h2>")
+	for i := 0; i < len(sittings)-1; i += 2 {
+		if sittings[i].Paper != "P1" {
+			continue
+		}
 		gap := sittings[i+1].StartMins - sittings[i].FinishMins
 		if gap < 35 {
-			errs = append(errs, fmt.Sprintf("Error: %s %s sitting %s %s on %s only has %d mins between papers",
+			errs = append(errs, fmt.Sprintf("%s %s sitting %s %s on %s only has %d mins between papers",
 				sittings[i].Name, sittings[i].Surname, sittings[i].Paper, sittings[i].Subject, sittings[i].Date, gap))
 		}
 	}
 
-	if len(errs) == 0 {
-		return nil
+	if len(errs) == 1 {
+		errs = append(errs, "OK")
 	}
 
-	return errors.New(strings.Join(errs, "<br />"))
+	return strings.Join(errs, "<br />")
+}
+
+func (a *Arrangements) CheckPupilsAreNotInTwoPlacesAtOnce() string {
+
+	rows, err := a.db.Query(selectAllDatesQuery)
+	if err != nil {
+		return err.Error()
+	}
+
+	dates := make([]string, 0)
+	for rows.Next() {
+		var date string
+		rows.Scan(&date)
+		dates = append(dates, date)
+	}
+	rows.Close()
+
+	errs := make([]string, 0)
+	errs = append(errs, "<h2>Checking for pupils that need to be in two places at once...</h2>")
+	for _, d := range dates {
+		rows, err = a.db.Query(pupilsForDateQuery, d)
+		if err != nil {
+			return err.Error()
+		}
+
+		pupils := make([]Pupil, 0)
+		for rows.Next() {
+			var name string
+			var surname string
+			rows.Scan(&name, &surname)
+			pupils = append(pupils, Pupil{Name: name, Surname: surname})
+		}
+		rows.Close()
+
+		for _, p := range pupils {
+			rows, err = a.db.Query(examsForPupilAndDateCheckQuery, d, p.Name, p.Surname)
+			if err != nil {
+				return err.Error()
+			}
+
+			exams := make([]Sitting, 0)
+			var subject string
+			var paper string
+			var start int
+			var finish int
+			for rows.Next() {
+				rows.Scan(&subject, &paper, &start, &finish)
+				exams = append(exams, Sitting{Subject: subject, Paper: paper, StartMins: start, FinishMins: finish})
+			}
+			rows.Close()
+
+			for i := 0; i < len(exams)-1; i++ {
+				if exams[i].FinishMins > exams[i+1].StartMins {
+					errs = append(errs, fmt.Sprintf("%s %s needs to be in two places at once on %s", p.Name, p.Surname, d))
+				}
+			}
+		}
+
+	}
+
+	if len(errs) == 1 {
+		errs = append(errs, "OK")
+	}
+
+	return strings.Join(errs, "<br />")
 }

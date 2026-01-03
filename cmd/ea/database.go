@@ -61,6 +61,15 @@ const (
     WHERE paper IN ('P1','P2')
     ORDER BY surname ASC, subject ASC, paper ASC, date ASC, start ASC`
 
+	pupilsForDateQuery = `SELECT DISTINCT name,surname
+    FROM input
+    WHERE date=?`
+
+	examsForPupilAndDateCheckQuery = `SELECT subject,paper,start,finish
+    FROM input
+    WHERE date=? AND name=? and surname=?
+    ORDER BY start`
+
 	// room view
 
 	selectAllLocationsQuery = `SELECT DISTINCT location

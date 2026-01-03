@@ -20,22 +20,21 @@ type Arrangements struct {
 	RegistersSheet    []byte
 	InvigilatorsSheet []byte
 	db                *sql.DB
+	populated         bool
 }
 
 func (a *Arrangements) RunChecksCallbackFunc() js.Func {
 	return js.FuncOf(func(this js.Value, args []js.Value) any {
-		errCaught := false
 		doc := js.Global().Get("document")
 		checksDiv := doc.Call("getElementById", "checks")
-		for _, cf := range []func() error{a.CheckP1P2Gap, a.AllPupilsHaveBothPapers} {
-			err := cf()
-			if err != nil {
-				errCaught = true
-				checksDiv.Call("insertAdjacentHTML", "beforeend", err.Error())
-			}
+		err := a.ReadSheetIntoDb()
+		if err != nil {
+			// TODO: also show error on html page
+			panic(err)
 		}
-		if !errCaught {
-			checksDiv.Call("insertAdjacentHTML", "beforeend", "All checks passed")
+		for _, cf := range []func() string{a.CheckP1P2Gap, a.AllPupilsHaveBothPapers, a.CheckPupilsAreNotInTwoPlacesAtOnce} {
+			output := cf()
+			checksDiv.Call("insertAdjacentHTML", "beforeend", output)
 		}
 		return nil
 	})
@@ -78,6 +77,7 @@ func (a *Arrangements) GenerateCallbackFunc() js.Func {
 		doc := js.Global().Get("document")
 		dloadDiv := doc.Call("getElementById", "downloads")
 		dloadDiv.Call("insertAdjacentHTML", "beforeend", fmt.Sprintf(`
+        <h2>Download links</h2>
         <a download="pupils_%s.xlsx" href="/" id="pupils_link">Download Pupils Sheet</a><br />
         <a download="registers_%s.xlsx" href="/" id="registers_link">Download Registers Sheet</a><br />
         <a download="room_utilization_%s.xlsx" href="/" id="room_util_link">Download Room Utilization Sheet</a><br />

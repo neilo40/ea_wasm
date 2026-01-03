@@ -111,6 +111,7 @@ func (a *Arrangements) GeneratePupilView() error {
 		f.SetColWidth(sheetName, "B", "B", float64(maxPaperWidth)+2)
 		f.SetColWidth(sheetName, "C", "C", float64(maxLevelWidth)+2)
 		f.SetColWidth(sheetName, "D", "D", 11) // date
+		f.SetCellStyle(sheetName, "D5", fmt.Sprintf("D%d", rowNum-1), dateStyle)
 
 		// footer
 

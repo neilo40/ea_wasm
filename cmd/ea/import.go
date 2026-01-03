@@ -31,6 +31,10 @@ func (a *Arrangements) ReadFile() js.Func {
 }
 
 func (a *Arrangements) ReadSheetIntoDb() error {
+	if a.populated {
+		return nil // already loaded
+	}
+
 	// parse sheet
 	f, err := excelize.OpenReader(bytes.NewReader(a.inputBytes))
 	if err != nil {
@@ -72,6 +76,8 @@ func (a *Arrangements) ReadSheetIntoDb() error {
 			return err
 		}
 	}
+	a.populated = true
+
 	return nil
 }
 
