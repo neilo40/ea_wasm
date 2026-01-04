@@ -44,7 +44,7 @@ type Sitting struct {
 	FinishMins int
 }
 
-func (a *Arrangements) CheckP1P2Gap() string {
+func (a *Arrangements) CheckExamGaps() string {
 	rows, err := a.db.Query(timeBetweenPapersCheckQuery)
 	if err != nil {
 		return err.Error()
@@ -65,15 +65,21 @@ func (a *Arrangements) CheckP1P2Gap() string {
 	}
 
 	errs := make([]string, 0)
-	errs = append(errs, "<h2>Checking gap between P1 and P2...</h2>")
-	for i := 0; i < len(sittings)-1; i += 2 {
-		if sittings[i].Paper != "P1" {
-			continue
-		}
+	errs = append(errs, "<h2>Checking gap between papers...</h2>")
+	for i := 0; i < len(sittings)-1; i++ {
 		gap := sittings[i+1].StartMins - sittings[i].FinishMins
-		if gap < 35 {
-			errs = append(errs, fmt.Sprintf("%s %s sitting %s %s on %s only has %d mins between papers",
-				sittings[i].Name, sittings[i].Surname, sittings[i].Paper, sittings[i].Subject, sittings[i].Date, gap))
+		if sittings[i].Paper == "P1" {
+			// need 30 min gap between P1 and P2 of the same subject
+			if gap < 30 {
+				errs = append(errs, fmt.Sprintf("%s %s sitting %s on %s only has %d mins between papers",
+					sittings[i].Name, sittings[i].Surname, sittings[i].Subject, sittings[i].Date, gap))
+			}
+		} else if sittings[i].Date == sittings[i+1].Date && sittings[i].Subject != sittings[i+1].Subject {
+			// otherwise need 60 min gap between different subjects on the same day.
+			if gap < 60 {
+				errs = append(errs, fmt.Sprintf("%s %s sitting %s %s followed by %s %s on %s only has %d mins between subjects",
+					sittings[i].Name, sittings[i].Surname, sittings[i].Paper, sittings[i].Subject, sittings[i+1].Paper, sittings[i+1].Subject, sittings[i].Date, gap))
+			}
 		}
 	}
 

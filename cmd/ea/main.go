@@ -32,7 +32,7 @@ func (a *Arrangements) RunChecksCallbackFunc() js.Func {
 			// TODO: also show error on html page
 			panic(err)
 		}
-		for _, cf := range []func() string{a.CheckP1P2Gap, a.AllPupilsHaveBothPapers, a.CheckPupilsAreNotInTwoPlacesAtOnce} {
+		for _, cf := range []func() string{a.CheckExamGaps, a.AllPupilsHaveBothPapers, a.CheckPupilsAreNotInTwoPlacesAtOnce} {
 			output := cf()
 			checksDiv.Call("insertAdjacentHTML", "beforeend", output)
 		}

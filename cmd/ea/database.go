@@ -58,8 +58,7 @@ const (
 
 	timeBetweenPapersCheckQuery = `SELECT name,surname,subject,paper,date,start,finish 
     FROM input
-    WHERE paper IN ('P1','P2')
-    ORDER BY surname ASC, subject ASC, paper ASC, date ASC, start ASC`
+    ORDER BY surname ASC, name ASC, date ASC, start ASC`
 
 	pupilsForDateQuery = `SELECT DISTINCT name,surname
     FROM input
