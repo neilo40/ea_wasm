@@ -95,7 +95,7 @@ func (a *Arrangements) GenerateRegistersView() error {
 
 			// table header
 
-			f.SetCellStyle(sheetName, "A3", "E3", tableHeaderStyle)
+			f.SetCellStyle(sheetName, "A3", "G3", tableHeaderStyle)
 			f.SetSheetRow(sheetName, "A3", &[]any{"Name", "Surname", "Subject", "Location", "Laptop #", "Seat #", "Present"})
 
 			// table content
@@ -119,7 +119,7 @@ func (a *Arrangements) GenerateRegistersView() error {
 				rowNum++
 			}
 
-			f.SetCellStyle(sheetName, "A4", fmt.Sprintf("E%d", rowNum-1), tableContentStyle)
+			f.SetCellStyle(sheetName, "A4", fmt.Sprintf("G%d", rowNum-1), tableContentStyle)
 			// no autowidth func, need to set manually
 			f.SetColWidth(sheetName, "A", "A", float64(maxNameWidth)+2)
 			f.SetColWidth(sheetName, "B", "B", float64(maxSurnameWidth)+2)

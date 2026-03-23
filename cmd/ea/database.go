@@ -24,7 +24,7 @@ const (
     FROM input
     ORDER BY surname ASC`
 
-	selectPupilExamsQuery = `SELECT DISTINCT subject,paper,level,date,location,start,finish 
+	selectPupilExamsQuery = `SELECT DISTINCT subject,paper,level,date,location,start,finish,extra_time,notes 
     FROM input 
     WHERE name=? AND surname=?`
 
