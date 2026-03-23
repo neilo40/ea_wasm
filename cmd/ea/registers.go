@@ -96,7 +96,7 @@ func (a *Arrangements) GenerateRegistersView() error {
 			// table header
 
 			f.SetCellStyle(sheetName, "A3", "E3", tableHeaderStyle)
-			f.SetSheetRow(sheetName, "A3", &[]any{"Name", "Surname", "Subject", "Location", "Present"})
+			f.SetSheetRow(sheetName, "A3", &[]any{"Name", "Surname", "Subject", "Location", "Laptop #", "Seat #", "Present"})
 
 			// table content
 
