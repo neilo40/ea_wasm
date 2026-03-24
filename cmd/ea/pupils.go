@@ -70,7 +70,7 @@ func (a *Arrangements) GeneratePupilView() error {
 		f.SetRowHeight(sheetName, 2, 30)
 
 		// table header
-		f.SetCellStyle(sheetName, "A4", "I4", tableHeaderStyle)
+		f.SetCellStyle(sheetName, "A4", "J4", tableHeaderStyle)
 		f.SetSheetRow(sheetName, "A4", &[]any{"Subject", "Paper", "Level", "Date", "Location", "Start", "Finish", "Separate Accom.", "Extra Time", "Additional Arrangements"})
 
 		// exam details
