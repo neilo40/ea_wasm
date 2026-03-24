@@ -94,6 +94,11 @@ func parseSheetRow(row []string, colMap map[string]int) []any {
 	args = append(args, strings.TrimSpace(row[colMap["Location"]]))
 	args = append(args, timeToMins(strings.TrimSpace(row[colMap["Start"]])))
 	args = append(args, timeToMins(strings.TrimSpace(row[colMap["Finish"]])))
+	sepAccom := ""
+	if len(row) > colMap["Sep Acc"] {
+		sepAccom = row[colMap["Sep Acc"]]
+	}
+	args = append(args, sepAccom)
 	exTime := ""
 	if len(row) > colMap["Ex Time"] {
 		exTime = row[colMap["Ex Time"]]

@@ -12,11 +12,12 @@ const (
     location TEXT NOT NULL,
     start INTEGER NOT NULL,
     finish INTEGER NOT NULL,
+    sep_accom TEXT,
     extra_time TEXT,
     notes TEXT)`
 
-	insertQuery = `INSERT INTO input (name,surname,subject,paper,level,date,location,start,finish,extra_time,notes) 
-    VALUES (?,?,?,?,?,?,?,?,?,?,?)`
+	insertQuery = `INSERT INTO input (name,surname,subject,paper,level,date,location,start,finish,sep_accom,extra_time,notes) 
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
 
 	// pupil view
 
@@ -24,7 +25,7 @@ const (
     FROM input
     ORDER BY surname ASC`
 
-	selectPupilExamsQuery = `SELECT DISTINCT subject,paper,level,date,location,start,finish,extra_time,notes 
+	selectPupilExamsQuery = `SELECT DISTINCT subject,paper,level,date,location,start,finish,sep_accom,extra_time,notes 
     FROM input 
     WHERE name=? AND surname=?`
 

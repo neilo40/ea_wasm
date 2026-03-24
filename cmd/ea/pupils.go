@@ -71,7 +71,7 @@ func (a *Arrangements) GeneratePupilView() error {
 
 		// table header
 		f.SetCellStyle(sheetName, "A4", "I4", tableHeaderStyle)
-		f.SetSheetRow(sheetName, "A4", &[]any{"Subject", "Paper", "Level", "Date", "Location", "Start", "Finish", "Extra Time", "Additional Arrangements"})
+		f.SetSheetRow(sheetName, "A4", &[]any{"Subject", "Paper", "Level", "Date", "Location", "Start", "Finish", "Separate Accom.", "Extra Time", "Additional Arrangements"})
 
 		// exam details
 
@@ -92,13 +92,17 @@ func (a *Arrangements) GeneratePupilView() error {
 			var start int
 			var finish int
 			var extraTime string
+			var sepAccom string
 			var notes string
-			examRows.Scan(&subject, &paper, &level, &date, &location, &start, &finish, &extraTime, &notes)
+			examRows.Scan(&subject, &paper, &level, &date, &location, &start, &finish, &sepAccom, &extraTime, &notes)
 			if extraTime != "" {
 				extraTime = "Y"
 			}
+			if sepAccom != "" {
+				sepAccom = "Y"
+			}
 			f.SetSheetRow(sheetName, fmt.Sprintf("A%d", rowNum), &[]any{subject, paper, level, date, location, minsToTime(start),
-				minsToTime(finish), extraTime, notes})
+				minsToTime(finish), sepAccom, extraTime, notes})
 			rowNum++
 			if len(subject) > maxSubjectWidth {
 				maxSubjectWidth = len(subject)
@@ -116,8 +120,10 @@ func (a *Arrangements) GeneratePupilView() error {
 		f.SetColWidth(sheetName, "B", "B", float64(maxPaperWidth)+2)
 		f.SetColWidth(sheetName, "C", "C", float64(maxLevelWidth)+2)
 		f.SetColWidth(sheetName, "D", "D", 11) // date
-		f.SetColWidth(sheetName, "H", "H", 12) // extra time
-		f.SetColWidth(sheetName, "I", "I", 30) // additional arrangements
+		f.SetColWidth(sheetName, "H", "H", 16) // separate accommodation
+		f.SetColWidth(sheetName, "I", "I", 12) // extra time
+		f.SetColWidth(sheetName, "J", "J", 40) // additional arrangements
+		f.SetCellStyle(sheetName, "J5", fmt.Sprintf("J%d", rowNum-1), additionalArrStyle)
 		f.SetCellStyle(sheetName, "D5", fmt.Sprintf("D%d", rowNum-1), dateStyle)
 
 		// footer

@@ -3,15 +3,16 @@ package main
 import "github.com/xuri/excelize/v2"
 
 var (
-	nameStyle         int
-	tableHeaderStyle  int
-	tableContentStyle int
-	instructionsStyle int
-	footerStyle       int
-	dateStyle         int
-	err               error
-	pageSize          = 9 // A4
-	pageOrientation   = "landscape"
+	nameStyle          int
+	tableHeaderStyle   int
+	tableContentStyle  int
+	additionalArrStyle int
+	instructionsStyle  int
+	footerStyle        int
+	dateStyle          int
+	err                error
+	pageSize           = 9 // A4
+	pageOrientation    = "landscape"
 )
 
 func setupStyles(f *excelize.File) error {
@@ -46,6 +47,21 @@ func setupStyles(f *excelize.File) error {
 			{Type: "right", Style: 1, Color: "000000"},
 			{Type: "top", Style: 1, Color: "000000"},
 			{Type: "bottom", Style: 1, Color: "000000"},
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	additionalArrStyle, err = f.NewStyle(&excelize.Style{
+		Border: []excelize.Border{
+			{Type: "left", Style: 1, Color: "000000"},
+			{Type: "right", Style: 1, Color: "000000"},
+			{Type: "top", Style: 1, Color: "000000"},
+			{Type: "bottom", Style: 1, Color: "000000"},
+		},
+		Alignment: &excelize.Alignment{
+			WrapText: true,
 		},
 	})
 	if err != nil {
