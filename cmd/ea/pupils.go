@@ -97,9 +97,6 @@ func (a *Arrangements) GeneratePupilView() error {
 			if extraTime != "" {
 				extraTime = "Y"
 			}
-			if notes != "" {
-				notes = "Y"
-			}
 			f.SetSheetRow(sheetName, fmt.Sprintf("A%d", rowNum), &[]any{subject, paper, level, date, location, minsToTime(start),
 				minsToTime(finish), extraTime, notes})
 			rowNum++
@@ -119,6 +116,8 @@ func (a *Arrangements) GeneratePupilView() error {
 		f.SetColWidth(sheetName, "B", "B", float64(maxPaperWidth)+2)
 		f.SetColWidth(sheetName, "C", "C", float64(maxLevelWidth)+2)
 		f.SetColWidth(sheetName, "D", "D", 11) // date
+		f.SetColWidth(sheetName, "H", "H", 12) // extra time
+		f.SetColWidth(sheetName, "I", "I", 30) // additional arrangements
 		f.SetCellStyle(sheetName, "D5", fmt.Sprintf("D%d", rowNum-1), dateStyle)
 
 		// footer
