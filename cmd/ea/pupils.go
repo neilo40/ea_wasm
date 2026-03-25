@@ -71,7 +71,7 @@ func (a *Arrangements) GeneratePupilView() error {
 
 		// table header
 		f.SetCellStyle(sheetName, "A4", "J4", tableHeaderStyle)
-		f.SetSheetRow(sheetName, "A4", &[]any{"Subject", "Paper", "Level", "Date", "Location", "Start", "Finish", "Sep Accom", "Ex Time", "Additional Arrangements"})
+		f.SetSheetRow(sheetName, "A4", &[]any{"Subject", "Paper", "Level", "Date", "Location", "Start", "Finish", "Accom", "+Time", "Additional Arrangements"})
 
 		// exam details
 
@@ -120,8 +120,10 @@ func (a *Arrangements) GeneratePupilView() error {
 		f.SetColWidth(sheetName, "B", "B", float64(maxPaperWidth)+2)
 		f.SetColWidth(sheetName, "C", "C", float64(maxLevelWidth)+2)
 		f.SetColWidth(sheetName, "D", "D", 11) // date
-		f.SetColWidth(sheetName, "H", "H", 10) // separate accommodation
-		f.SetColWidth(sheetName, "I", "I", 10) // extra time
+		f.SetColWidth(sheetName, "E", "E", 8)  // start
+		f.SetColWidth(sheetName, "F", "F", 8)  // finish
+		f.SetColWidth(sheetName, "H", "H", 7)  // separate accommodation
+		f.SetColWidth(sheetName, "I", "I", 7)  // extra time
 		f.SetColWidth(sheetName, "J", "J", 30) // additional arrangements
 		f.SetCellStyle(sheetName, "J5", fmt.Sprintf("J%d", rowNum-1), additionalArrStyle)
 		f.SetCellStyle(sheetName, "D5", fmt.Sprintf("D%d", rowNum-1), dateStyle)
