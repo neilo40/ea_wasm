@@ -10,8 +10,6 @@ import (
 	"syscall/js"
 
 	"github.com/xuri/excelize/v2"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 func (a *Arrangements) ReadFile() js.Func {
@@ -85,8 +83,8 @@ func (a *Arrangements) ReadSheetIntoDb() error {
 
 func parseSheetRow(row []string, colMap map[string]int) []any {
 	args := make([]any, 0, 11)
-	args = append(args, cases.Title(language.Und).String(strings.TrimSpace(row[colMap["Name"]])))
-	args = append(args, cases.Title(language.Und).String(strings.TrimSpace(row[colMap["Surname"]])))
+	args = append(args, strings.TrimSpace(row[colMap["Name"]]))
+	args = append(args, strings.TrimSpace(row[colMap["Surname"]]))
 	args = append(args, strings.TrimSpace(row[colMap["Subject"]]))
 	args = append(args, strings.TrimSpace(row[colMap["Paper"]]))
 	args = append(args, strings.TrimSpace(row[colMap["Level"]]))
