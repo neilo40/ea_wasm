@@ -65,7 +65,7 @@ func (a *Arrangements) GeneratePupilView() error {
 		// instructions
 
 		f.MergeCell(sheetName, "A2", "G2")
-		f.SetCellStr(sheetName, "A2", "Please meet Mrs O’Connor at the conference room 10 minutes before your prelim is due to start")
+		f.SetCellStr(sheetName, "A2", "Please meet Mrs O’Connor at the conference room 10 minutes before your exam is due to start")
 		f.SetCellStyle(sheetName, "A2", "A2", instructionsStyle)
 		f.SetRowHeight(sheetName, 2, 30)
 
@@ -87,19 +87,23 @@ func (a *Arrangements) GeneratePupilView() error {
 			var subject string
 			var paper string
 			var level string
-			var date string
+			var dateStr string
 			var location string
 			var start int
 			var finish int
 			var extraTime string
 			var sepAccom string
 			var notes string
-			examRows.Scan(&subject, &paper, &level, &date, &location, &start, &finish, &sepAccom, &extraTime, &notes)
+			examRows.Scan(&subject, &paper, &level, &dateStr, &location, &start, &finish, &sepAccom, &extraTime, &notes)
 			if extraTime != "" {
 				extraTime = "Y"
 			}
 			if sepAccom != "" {
 				sepAccom = "Y"
+			}
+			date, err := time.Parse("02/01/2006", dateStr)
+			if err != nil {
+				return err
 			}
 			f.SetSheetRow(sheetName, fmt.Sprintf("A%d", rowNum), &[]any{subject, paper, level, date, location, minsToTime(start),
 				minsToTime(finish), sepAccom, extraTime, notes})
@@ -114,6 +118,7 @@ func (a *Arrangements) GeneratePupilView() error {
 				maxLevelWidth = len(level)
 			}
 		}
+
 		f.SetCellStyle(sheetName, "A5", fmt.Sprintf("I%d", rowNum-1), tableContentStyle)
 		// no autowidth func, need to set manually
 		f.SetColWidth(sheetName, "A", "A", float64(maxSubjectWidth)+2)
