@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/xuri/excelize/v2"
@@ -101,8 +102,9 @@ func (a *Arrangements) GeneratePupilView() error {
 			if sepAccom != "" {
 				sepAccom = "Y"
 			}
-			date, err := time.Parse("02/01/2006", dateStr)
+			date, err := time.Parse("01-02-06", dateStr)
 			if err != nil {
+				log.Printf("%s %s %s\n", p.Name, p.Surname, dateStr)
 				return err
 			}
 			f.SetSheetRow(sheetName, fmt.Sprintf("A%d", rowNum), &[]any{subject, paper, level, date, location, minsToTime(start),
