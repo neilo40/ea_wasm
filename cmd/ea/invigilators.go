@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -81,9 +82,16 @@ func (a *Arrangements) GenerateInvigilatorsView() error {
 				continue // no exams on this date for this session
 			}
 
+			date, err := time.Parse("01-02-06", ld.Date)
+			if err != nil {
+				log.Println(ld.Date)
+				return err
+			}
+			dateStr := date.Format("02/Jan/2006")
+
 			// create worksheets
 
-			sheetName := fmt.Sprintf("%s %s %s", ld.Location, strings.ReplaceAll(ld.Date, "/", "_"), s.name)
+			sheetName := fmt.Sprintf("%s %s %s", ld.Location, strings.ReplaceAll(dateStr, "/", "_"), s.name)
 			index, err := f.NewSheet(sheetName)
 			if err != nil {
 				return err
@@ -100,7 +108,7 @@ func (a *Arrangements) GenerateInvigilatorsView() error {
 			// title
 
 			f.SetCellStyle(sheetName, "A1", "A1", nameStyle)
-			f.SetCellStr(sheetName, "A1", fmt.Sprintf("%s (Room %s, %s)", ld.Date, ld.Location, s.name))
+			f.SetCellStr(sheetName, "A1", fmt.Sprintf("%s (Room %s, %s)", dateStr, ld.Location, s.name))
 			f.MergeCell(sheetName, "A1", "I1")
 			f.SetRowHeight(sheetName, 1, 40)
 
@@ -115,9 +123,9 @@ func (a *Arrangements) GenerateInvigilatorsView() error {
 			maxNameWidth := 5
 			maxSurnameWidth := 8
 			maxSubjectWidth := 8
-			maxLevelWidth := 6
-			maxExTimeWidth := 8
-			maxNotesWidth := 24
+			maxLevelWidth := 5
+			maxExTimeWidth := 6
+			maxNotesWidth := 30
 			rowNum := 4
 			for _, r := range irows {
 
@@ -136,9 +144,6 @@ func (a *Arrangements) GenerateInvigilatorsView() error {
 				if len(r.Extime) > maxExTimeWidth {
 					maxExTimeWidth = len(r.Extime)
 				}
-				if len(r.Notes) > maxNotesWidth {
-					maxNotesWidth = len(r.Notes)
-				}
 				f.SetSheetRow(sheetName, fmt.Sprintf("A%d", rowNum), &[]any{r.Name, r.Surname, r.Subject, r.Paper, r.Level,
 					r.Start, r.Finish, r.Extime, r.Notes})
 				rowNum++
@@ -152,6 +157,7 @@ func (a *Arrangements) GenerateInvigilatorsView() error {
 			f.SetColWidth(sheetName, "E", "E", float64(maxLevelWidth)+2)
 			f.SetColWidth(sheetName, "H", "H", float64(maxExTimeWidth)+2)
 			f.SetColWidth(sheetName, "I", "I", float64(maxNotesWidth)+2)
+			f.SetCellStyle(sheetName, "I4", fmt.Sprintf("I%d", rowNum-1), additionalArrStyle)
 
 			// footer
 
